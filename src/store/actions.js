@@ -14,14 +14,6 @@ export function changeNum(data) {
   };
 }
 
-// 选择的商品
-export function addItem(data) {
-  console.log(data, "===data");
-  return (dispatch, getState) => {
-    dispatch({ type: "ADD_ITEM", data: data });
-  };
-}
-
 // 获取列表失败
 export function getListFail(data) {
   return (dispatch, getState) => {
@@ -29,9 +21,25 @@ export function getListFail(data) {
   };
 }
 
+// 选择的商品
+export function addItem(data) {
+  return (dispatch, getState) => {
+    dispatch({ type: "ADD_ITEM", data: data });
+  };
+}
 
-// export function setAmount(data) {
-//   return (dispatch, getState) => {
-//     dispatch({ type: "SET_PAGE_TITLE1111", data: data });
-//   };
-// }
+// 增加商品
+export function increaseItem(data) {
+  console.log(data, "====action=== data");
+  return (dispatch, getState) => {
+    dispatch({ type: "INCREASE_ITEM", data: data });
+  };
+}
+
+// 减少商品
+export function decreaseItem(data) {
+  console.log(data, "====action=== data");
+  return (dispatch, getState) => {
+    dispatch({ type: "DECREASE_ITEM", data: data });
+  };
+}

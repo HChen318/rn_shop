@@ -1,12 +1,12 @@
 import React, { Component } from "react";
-import { Text, View, Button, SectionList, StyleSheet } from "react-native";
+import { Text, View, SectionList, StyleSheet } from "react-native";
 import ItemRow from "../components/demo/itemRow";
 import CartFooter from "../components/demo/CartFooter";
 import { Octicons, SimpleLineIcons } from "@expo/vector-icons";
-import JSonData from "../../db.json";
 import store from "../store";
+import { connect } from "react-redux";
 
-export default class DemoScreen extends Component {
+class DemoScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -35,6 +35,16 @@ export default class DemoScreen extends Component {
   };
 
   componentDidMount() {
+    this.handleData();
+
+    this.unsubscribe = store.subscribe(() => {
+      console.log("state状态改变了，新状态以下");
+      console.log(store.getState(), "===store===");
+      this.handleData();
+    });
+  }
+
+  handleData = () => {
     const storeSelected = store.getState().ch.selected;
 
     var obj = {};
@@ -54,32 +64,12 @@ export default class DemoScreen extends Component {
       };
     });
     this.setState({ SectionData: arr, data: storeSelected });
+  };
 
-    //fetch from JSON server
-    // fetch("http://localhost:3000/data")
-    //   .then((result) => result.json())
-    //   .then((res) => {
-    //     //create two-dimensional array to fit the Sectionlist component
-    //     var obj = {}
-    //     for (var i in res) {
-    //       if (!obj[res[i].shop]) {
-    //         var arr = [];
-    //         arr.push(res[i]);
-    //         obj[res[i].shop] = arr;
-    //       } else {
-    //         obj[res[i].shop].push(res[i]);
-    //       }
-    //     }
-    //     var arr = Object.keys(obj).map((key) => {
-    //       return {
-    //         data: obj[key],
-    //         title: key,
-    //       }
-    //     }
-    //     );
-    //     this.setState({ SectionData: arr, data: res })
-    //   })
-    //   .catch(console.log("caught error"));
+  componentWillUnmount() {
+    this.props.navigation.state.params.refresh();
+    // 解除监听
+    this.unsubscribe();
   }
 
   changeDataList(dataItem, index) {
@@ -119,7 +109,6 @@ export default class DemoScreen extends Component {
   }
 
   _sectionComp = (info) => {
-    // console.log(info, "===info");
     var txt = "" + info.section.title;
     return (
       <View
@@ -157,6 +146,7 @@ export default class DemoScreen extends Component {
   render() {
     const { containerStyle } = styles;
 
+    // console.log(this.state.SectionData, "===SectionData");
     return (
       <View style={containerStyle}>
         <SectionList
@@ -170,6 +160,7 @@ export default class DemoScreen extends Component {
               index={index}
               changeItem={this.changeDataList.bind(this)}
               navigation={this.props.navigation}
+              {...this.props}
             />
           )}
           renderSectionHeader={this._sectionComp}
@@ -200,3 +191,5 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
 });
+
+export default connect()(DemoScreen);

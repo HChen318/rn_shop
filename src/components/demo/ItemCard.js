@@ -2,7 +2,7 @@ import React from "react";
 import { Text, View, Image, TouchableOpacity } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
 
-import { addItem, addNum } from "../../store/actions";
+import { addItem } from "../../store/actions";
 import store from "../../store";
 
 const ItemCard = ({ item, navigation, dispatch, index, onChange }) => {
@@ -56,8 +56,6 @@ const ItemCard = ({ item, navigation, dispatch, index, onChange }) => {
           onPress={() => {
             dispatch(addItem({ item, num: store.getState().ch.shopNum + 1 }));
             onChange();
-            console.log(store.getState(), "====改变后STORE数据");
-            // navigation.navigate("Cart");
           }}
         />
       </View>

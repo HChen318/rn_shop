@@ -66,7 +66,15 @@ class HomeScreen extends React.Component {
             name="shoppingcart"
             size={25}
             color="black"
-            onPress={() => props.navigation.navigate("Cart")}
+            onPress={() =>
+              props.navigation.navigate("Cart", {
+                refresh: function () {
+                  // console.log(props, "===props");
+                  // 获取及使用
+                  props.navigation.getParam("updateNum")();
+                },
+              })
+            }
           />
           <View style={styles.headerRightNum}>
             <Text style={{ fontSize: 12, color: "#fff" }}>
@@ -83,13 +91,12 @@ class HomeScreen extends React.Component {
       data: JSonData.data,
     });
 
+    // 右侧数量
     this.props.navigation.setParams({
       totalAmount: this.props.shopNum,
+      updateNum: this.updateNum, // 挂载一个右侧更新数量的函数
     });
 
-    // 获取state中所有数据 getState就是store实例的一个api
-    // store
-    // console.log(this.props)
     //fetch from JSON server
     // fetch("http://localhost:3000/db.json")
     //   .then((result) => result.json())
@@ -97,15 +104,20 @@ class HomeScreen extends React.Component {
     //     this.setState({ data: res })
     //     reactotron.log(res,'===homeres')
     //   })
-
-    // fetchProduc()
   }
 
+  updateNum = () => {
+    this.props.navigation.setParams({
+      totalAmount: this.props.shopNum,
+    });
+  };
+
   test1 = () => {
-    // console.log(this.props, "===this.props");
-    // this.props.dispatch(changeNum(2000));
-    this.props.changeNum(2000);
-    this.setState({
+    // mapDispatchToProps
+    // this.props.changeNum(2000);
+    // 常规
+    this.props.dispatch(changeNum(2000));
+    this.this.setState({
       val: 2,
     });
   };
