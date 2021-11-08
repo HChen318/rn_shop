@@ -1,21 +1,12 @@
 import React, { useState } from "react";
-import {
-  Text,
-  StyleSheet,
-  View,
-  Image,
-  TouchableOpacity,
-  Button,
-} from "react-native";
+import { Text, StyleSheet, View, ScrollView } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
-import { ScrollView } from "react-native";
-import ItemList from "../components/demo/itemList";
 import ItemCard from "../components/demo/ItemCard";
 import reactotron from "reactotron-react-native";
 import JSonData from "../../db.json";
 
 // import * as Action from "../store/actions";
-import { changeNum } from "../store/actions";
+import { changeNum, getListSuccess } from "../store/actions";
 import store from "../store";
 import { connect } from "react-redux";
 
@@ -97,6 +88,8 @@ class HomeScreen extends React.Component {
       updateNum: this.updateNum, // 挂载一个右侧更新数量的函数
     });
 
+    this.props.dispatch(getListSuccess(JSonData.data));
+
     //fetch from JSON server
     // fetch("http://localhost:3000/db.json")
     //   .then((result) => result.json())
@@ -117,7 +110,7 @@ class HomeScreen extends React.Component {
     // this.props.changeNum(2000);
     // 常规
     this.props.dispatch(changeNum(2000));
-    this.this.setState({
+    this.setState({
       val: 2,
     });
   };
@@ -134,25 +127,27 @@ class HomeScreen extends React.Component {
             <CHCOM />
           </Text>
         </View>
-        <View style={styles.listStyle}>
-          {data.map((item, index) => {
-            return (
-              <ItemCard
-                item={item}
-                index={index}
-                key={item.id}
-                onChange={() => {
-                  this.props.navigation.setParams({
-                    totalAmount: store.getState().ch.shopNum,
-                  });
-                }}
-                // dispatch={this.props.dispatch}
-                // navigation={this.props.navigation}
-                {...this.props}
-              />
-            );
-          })}
-        </View>
+        <ScrollView>
+          <View style={styles.listStyle}>
+            {data.map((item, index) => {
+              return (
+                <ItemCard
+                  item={item}
+                  index={index}
+                  key={item.id}
+                  onChangeCallBack={() => {
+                    this.props.navigation.setParams({
+                      totalAmount: store.getState().ch.shopNum,
+                    });
+                  }}
+                  // dispatch={this.props.dispatch}
+                  // navigation={this.props.navigation}
+                  {...this.props}
+                />
+              );
+            })}
+          </View>
+        </ScrollView>
       </View>
     );
   }

@@ -5,7 +5,7 @@ import { AntDesign } from "@expo/vector-icons";
 import { addItem } from "../../store/actions";
 import store from "../../store";
 
-const ItemCard = ({ item, navigation, dispatch, index, onChange }) => {
+const ItemCard = ({ item, navigation, dispatch, index, onChangeCallBack }) => {
   //   Tips：
   // 这边使用 Image 组件，
   // require 中的图片名称必须为一个静态的字符串信息。不能在require中进行拼接。例如 :
@@ -25,7 +25,14 @@ const ItemCard = ({ item, navigation, dispatch, index, onChange }) => {
       style={index % 2 != 0 ? styles.listItemStyleRight : styles.listItemStyle}
     >
       <TouchableOpacity
-        onPress={() => navigation.navigate("Product", { detailId: item.id })}
+        onPress={() =>
+          navigation.navigate("Product", {
+            detailId: item.id,
+            refresh: function () {
+              navigation.getParam("updateNum")();
+            },
+          })
+        }
       >
         <Image style={styles.itemImgeStyle} source={img_Obj[item.image]} />
       </TouchableOpacity>
@@ -54,8 +61,9 @@ const ItemCard = ({ item, navigation, dispatch, index, onChange }) => {
           size={20}
           color="black"
           onPress={() => {
-            dispatch(addItem({ item, num: store.getState().ch.shopNum + 1 }));
-            onChange();
+            dispatch &&
+              dispatch(addItem({ item, num: store.getState().ch.shopNum + 1 }));
+            onChangeCallBack && onChangeCallBack();
           }}
         />
       </View>

@@ -1,17 +1,8 @@
 import React from "react";
-import {
-  Text,
-  StyleSheet,
-  View,
-  Image,
-  ScrollView,
-  TouchableOpacity,
-  Button,
-} from "react-native";
+import { Text, StyleSheet, View, Image, ScrollView } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
-import ItemList from "../components/demo/itemList";
-import reactotron from "reactotron-react-native";
-import JSonData from "../../db.json";
+import ItemCard from "../components/demo/ItemCard";
+import store from "../store";
 
 const Separator = () => <View style={styles.separator} />;
 
@@ -21,7 +12,7 @@ class ShopScreen extends React.Component {
     this.state = {
       data: [],
       shop: [],
-      shopType: ""
+      shopType: "",
     };
   }
 
@@ -42,35 +33,25 @@ class ShopScreen extends React.Component {
       ),
     };
   };
+
   componentDidMount() {
     const type = this.props.navigation.getParam("type");
-    const data = JSonData.data.filter((item) => item.shop === type);
+    const data = store
+      .getState()
+      .ch.product.filter((item) => item.shop === type);
 
     this.setState({ data, shopType: type });
-
-    //fetch from JSON server
-    //   fetch("http://localhost:3000/data", {
-    //     data: {
-    //         shopId: shopId,
-    //     }
-    // })
-    //     .then((result) => result.json())
-    //     .then((res) => {
-    //       const arr = res.find((item) => item.shopid === shopId)
-    //               this.setState({ shop: arr, data:res })
-    //               reactotron.log(arr, "===arr")
-    //       // this.setState({ data: res })
-    //     })
   }
+
   render() {
     const { navigate } = this.props.navigation;
     // 伪代码
     const img_Obj = {
-      HP: require('../assets/hp.png'),
-      Lovepeace: require('../assets/lovepeace.png'),
-      Super: require('../assets/lifescience.png'),
+      HP: require("../assets/hp.png"),
+      Lovepeace: require("../assets/lovepeace.png"),
+      Super: require("../assets/lifescience.png"),
     };
-    // https://img1.baidu.com/it/u=2313783195,1488013511&fm=26&fmt=auto
+
     return (
       <View>
         <View style={styles.headerStyle}>
@@ -88,10 +69,25 @@ class ShopScreen extends React.Component {
           <Text style={styles.shopInfoStyle}>Followers: 120</Text>
           <Text style={styles.shopInfoStyle}>Rating:5</Text>
         </View>
-        <ItemList
-          data={this.state.data}
-          navigation={this.props.navigation}
-        ></ItemList>
+        <ScrollView>
+          <View style={styles.listStyle}>
+            {this.state.data.map((item, index) => {
+              return (
+                <ItemCard
+                  item={item}
+                  index={index}
+                  key={item.id}
+                  onChangeCallBack={() => {
+                    this.props.navigation.setParams({
+                      totalAmount: store.getState().ch.shopNum,
+                    });
+                  }}
+                  {...this.props}
+                />
+              );
+            })}
+          </View>
+        </ScrollView>
       </View>
     );
   }
@@ -138,12 +134,12 @@ const styles = StyleSheet.create({
   },
 
   listStyle: {
-    backgroundColor: "#fff",
+    backgroundColor: "#ccc",
     flexDirection: "row",
     flexWrap: "wrap",
     alignItems: "flex-start",
-    paddingLeft: 2,
-    paddingRight: 2,
+    paddingLeft: 5,
+    paddingRight: 5,
   },
 
   listItemStyle: {

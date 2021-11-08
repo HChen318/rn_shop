@@ -45,7 +45,10 @@ class DemoScreen extends Component {
   }
 
   handleData = () => {
+    // 已选择的商品
     const storeSelected = store.getState().ch.selected;
+
+    console.log(storeSelected, "===storeSelected");
 
     var obj = {};
     for (var i in storeSelected) {

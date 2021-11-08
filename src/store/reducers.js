@@ -9,6 +9,12 @@ function pageTitle(state = defaultState, action) {
   switch (action.type) {
     case "SET_PAGE_TITLE":
       return state;
+    case "GET_PRODUCT_SUCCESS":
+      const newState5 = {
+        ...state,
+        product: action.data,
+      };
+      return newState5;
     case "GET_PRODUCT_FAIL":
       const newState4 = {
         ...state,
@@ -42,6 +48,7 @@ function pageTitle(state = defaultState, action) {
         shopNum: action.data.num, // 选择的数量
         selected: newArr, // 选择的列表
       };
+      console.log(newState2, "===newState2");
       return newState2;
     case "INCREASE_ITEM": // 增加当前商品的数量
       const preArr1 = [...state.selected];

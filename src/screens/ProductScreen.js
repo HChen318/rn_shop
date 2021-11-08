@@ -1,15 +1,10 @@
 import React from "react";
-import {
-  Text,
-  StyleSheet,
-  View,
-  Image,
-  TouchableOpacity,
-  Button,
-} from "react-native";
+import { Text, StyleSheet, View, Image, TouchableOpacity } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
-import reactotron from "reactotron-react-native";
 import JSonData from "../../db.json";
+import store from "../store";
+import { connect } from "react-redux";
+import { addItem } from "../store/actions";
 
 const Separator = () => <View style={styles.separator} />;
 class ProductScreen extends React.Component {
@@ -18,24 +13,15 @@ class ProductScreen extends React.Component {
   };
   componentDidMount() {
     const detailId = this.props.navigation.getParam("detailId");
-    // reactotron.log(detailId, "===detail");
+    const obj = store
+      .getState()
+      .ch.product.find((item) => item.id === detailId);
 
-    const obj = JSonData.data.find((item) => item.id === detailId);
-    // console.log(obj, "===obj");
     this.setState({ details: obj });
-    //fetch from JSON server
-    // fetch("http://localhost:3000/data", {
-    //     data: {
-    //         detailId: detailId,
-    //     }
-    // })
-    //     .then((result) => result.json())
-    //     .then((res) => {
-    //         reactotron.log(res, '===res')
-    //         const obj = res.find((item) => item.id === detailId)
-    //         this.setState({ details: obj })
-    //         reactotron.log(obj, "===obj")
-    //     })
+  }
+
+  componentWillUnmount() {
+    this.props.navigation.state.params.refresh();
   }
 
   static navigationOptions = (props) => {
@@ -54,6 +40,17 @@ class ProductScreen extends React.Component {
       ),
     };
   };
+
+  addToCart = () => {
+    console.log(111);
+    this.props.dispatch(
+      addItem({
+        item: this.state.details,
+        num: store.getState().ch.shopNum + 1,
+      })
+    );
+  };
+
   render() {
     const { navigate } = this.props.navigation;
     const { details } = this.state;
@@ -63,13 +60,6 @@ class ProductScreen extends React.Component {
           {/* <Text style={styles.headerTextStyle}>150x150</Text> */}
           <Image
             style={styles.itemImgeStyle}
-            // source={
-            //   this.state.details.image
-            //     ? {
-            //         uri: `/Users/xinyang.xu/xinyang/rn-starter-xy/src/assets/images/${this.state.details.image}.jpg`,
-            //       }
-            //     : `/Users/xinyang.xu/xinyang/rn-starter-xy/src/assets/images/unicorn.jpg`
-            // }
             source={require(`../assets/images/apple.jpg`)}
           />
         </View>
@@ -130,7 +120,7 @@ class ProductScreen extends React.Component {
         </View>
         <TouchableOpacity
           style={styles.bottomStyle}
-          onPress={() => navigate("Cart")}
+          onPress={() => this.addToCart()}
         >
           <Text style={styles.bottomTextStyle}>Add to Cart</Text>
         </TouchableOpacity>
@@ -167,7 +157,6 @@ const styles = StyleSheet.create({
   imageStyle: {
     height: 70,
     width: 70,
-    textAlign: "center",
     marginTop: 3,
     flex: 0.4,
   },
@@ -212,4 +201,4 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
 });
-export default ProductScreen;
+export default connect()(ProductScreen);

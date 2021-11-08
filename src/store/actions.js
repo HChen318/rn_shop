@@ -10,7 +10,14 @@ export function setPageTitle(data) {
 // 改变总数值
 export function changeNum(data) {
   return (dispatch, getState) => {
-    dispatch({ type: "SET_CHANGE_NUM", data: data });
+    dispatch({ type: "SET_CHANGE_NUM", data });
+  };
+}
+
+// 获取列表失败
+export function getListSuccess(data) {
+  return (dispatch, getState) => {
+    dispatch({ type: "GET_PRODUCT_SUCCESS", data });
   };
 }
 
